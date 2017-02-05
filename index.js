@@ -1,5 +1,6 @@
 var utils = require('./lib/utils');
 var url = require('url');
+var async = require('async');
 
 var options = {
     hostname: 'medium.com',
@@ -11,7 +12,7 @@ var options = {
 var links = new Set();
 var iterator = null;
 
-Set.prototype.union = function(setB) {
+Set.prototype.union = function (setB) {
     var union = new Set(this);
     for (var elem of setB) {
         union.add(elem);
@@ -19,36 +20,13 @@ Set.prototype.union = function(setB) {
     return union;
 }
 
-utils.collectAllLinks(options, function (err, res) {
-    if (err) {
-        console.log(err);
-    } else {
-        links = res;
-        iterator = links[Symbol.iterator]();
-        utils.writeLinksInCSVFormat('out.csv', res);
-        a(0);
+
+function makeRequest(callback) {
+
+    var data = iterator.next().value;
+    if(!data){
+        callback();
     }
-});
-
-function a(count) {
-
-    this.count = count;
-
-    while (this.count < 5) {
-
-        data = iterator.next()
-        if (data.value) {
-            makeRequest(this, data.value);
-        } else {
-            console.log('Process complete!!');
-            break;
-        }
-
-    }
-}
-
-function makeRequest(self, data) {
-
     var myurl = url.parse(data);
     var options = {
         hostname: myurl.host,
@@ -57,14 +35,43 @@ function makeRequest(self, data) {
         method: 'GET'
     };
 
-    self.count++;
     utils.collectAllLinks(options, function (err, res) {
         if (err) {
-            console.log(err);
+            callback(err, null);
         } else {
             links.union(res);
             utils.writeLinksInCSVFormat('out.csv', res);
-            a(--self.count);
+            callback(null, res);
+        }
+    });
+};
+
+
+utils.collectAllLinks(options, function (err, res) {
+    if (err) {
+        console.log(err);
+    } else {
+        links = res;
+        iterator = links[Symbol.iterator]();
+        utils.writeLinksInCSVFormat('out.csv', res);
+        myAsync();
+    }
+});
+
+function myAsync() {
+
+    var arr = [];
+    var count = 0;
+
+    while(count < links.size){
+        arr.push(makeRequest);
+        count++;
+    }
+    async.parallelLimit(arr, 5, function (err, results) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Process complete!!')
         }
     });
 }
