@@ -1,0 +1,18 @@
+{
+  "name": "crawl",
+  "version": "1.0.0",
+  "description": "crawl a given website and store the links into xml file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sivankar/Crawl.git"
+  },
+  "author": "Sivankar",
+  "bugs": {
+    "url": "https://github.com/sivankar/Crawl/issues"
+  },
+  "homepage": "https://github.com/sivankar/Crawl#readme"
+}
