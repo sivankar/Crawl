@@ -51,7 +51,7 @@ function makeRequest(self, data) {
 
     var myurl = url.parse(data);
     var options = {
-        hostname: 'medium.com',
+        hostname: myurl.host,
         port: 443,
         path: myurl.pathname,
         method: 'GET'
@@ -62,7 +62,6 @@ function makeRequest(self, data) {
         if (err) {
             console.log(err);
         } else {
-//            console.log('--type of links---',links instanceof Set);
             links.union(res);
             utils.writeLinksInCSVFormat('out.csv', res);
             a(--self.count);
