@@ -14,5 +14,8 @@
   "bugs": {
     "url": "https://github.com/sivankar/Crawl/issues"
   },
-  "homepage": "https://github.com/sivankar/Crawl#readme"
+  "homepage": "https://github.com/sivankar/Crawl#readme",
+  "dependencies": {
+    "cheerio": "^0.22.0"
+  }
 }
